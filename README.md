@@ -17,10 +17,10 @@
 
 ### 1. 不使用容器
 
-需要先编辑`alway_online.py`或`demo.py`文件，补全校园网账号、密码，随后执行。
+需要先编辑`main.py`文件，补全校园网账号、密码，随后执行。
 
 ```shell
-python alway_online.py # 运行脚本
+python main.py # 运行脚本
 ```
 
 ### 2. 使用容器
