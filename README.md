@@ -20,6 +20,7 @@
 需要先编辑`main.py`文件，补全校园网账号、密码，随后执行。
 
 ```shell
+pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple # 安装requests库
 python main.py # 运行脚本
 ```
 
