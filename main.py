@@ -1,10 +1,12 @@
 import os
 import sys
 import time
+import ctypes
 import threading
 from SztuSrunLogin.LoginManager import LoginManager
 from pystray import Icon, MenuItem, Menu
 from PIL import Image, ImageDraw
+import subprocess
 
 
 def get_executable_path():
@@ -39,7 +41,19 @@ def read_credentials(file_path):
     return user_id, password
 
 def is_connect_internet(testip):
-    status = os.system("ping {} -c 8 > /dev/null 2>&1".format(testip))
+
+    testip = "8.8.8.8"  # 你想要测试的 IP 地址
+
+    # 使用 subprocess.Popen 来执行 ping 命令并且防止弹出控制台窗口
+    process = subprocess.Popen(
+        ["ping", testip, "-c", "8"],
+        stdout=subprocess.DEVNULL,  # 重定向标准输出到 /dev/null (无输出)
+        stderr=subprocess.DEVNULL,  # 重定向错误输出到 /dev/null (无输出)
+        creationflags=subprocess.CREATE_NO_WINDOW  # 防止弹出窗口 (Windows 专用)
+    )
+
+    # 等待命令执行完成
+    status = process.wait()  # 获取返回状态码
     return status == 0
 
 def always_login(username, password, testip, checkinterval):
@@ -94,13 +108,22 @@ def setup_tray_icon():
     icon.run()
 
 if __name__ == "__main__":
+
+    log_path = get_executable_path()
+    # 日志文件路径，可以根据需要设置为你希望的路径
+    log_file_path = os.path.join(log_path, 'app_log.txt')
+
+# 打开日志文件并重定向输出
+    sys.stdout = open(log_file_path, 'a')  # 'a' 表示追加模式
+    sys.stderr = open(log_file_path, 'a')
+
     # 假设 credentials.txt 文件在程序同一目录下
     credentials_file = "credentials.txt"
 
     # 读取用户ID和密码，如果文件不存在或者内容格式不正确则退出
     user_id, password = read_credentials(credentials_file)
 
-    checkinterval = os.getenv("CHECK_INTERVAL", 5 * 60)
+    checkinterval =  60
 
     # 使用线程在后台运行登录检查逻辑
     login_thread = threading.Thread(target=always_login, args=(user_id, password, "114.114.114.114", int(checkinterval)))
