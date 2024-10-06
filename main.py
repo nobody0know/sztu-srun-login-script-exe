@@ -91,7 +91,6 @@ def create_image(width, height, color1, color2):
 # 退出程序的回调
 def quit_program(icon, item):
     icon.stop()
-    sys.exit()
 
 # 系统托盘启动函数
 def setup_tray_icon():
